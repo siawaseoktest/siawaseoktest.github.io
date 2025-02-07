@@ -32,15 +32,12 @@
             return;
         }
 
-        // URLをエンコード
-        let encodedUrl = encodeURIComponent(url);
-
         // QRコード生成エリアをクリア
         document.getElementById("qrcode").innerHTML = "";
 
-        // QRコード作成（エンコード後のURLを使用）
+        // QRコード作成（そのままのURLを使用）
         new QRCode(document.getElementById("qrcode"), {
-            text: encodedUrl,
+            text: url,
             width: 256,
             height: 256,
             correctLevel: QRCode.CorrectLevel.L  // 誤り訂正レベルをL（最小限）にする
@@ -52,5 +49,6 @@
         }, 500);
     }
 </script>
+
 </body>
 </html>
