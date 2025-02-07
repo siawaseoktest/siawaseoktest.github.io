@@ -18,43 +18,39 @@
     <button onclick="generateQR()">QRコード作成</button>
     <div id="qrcode"></div>
     <button id="downloadBtn" style="display:none;" onclick="downloadQR()">ダウンロード</button>
-
-    <script>
-        function generateQR() {
-            let url = document.getElementById("urlInput").value.trim();
-            if (!url) {
-                alert("URLを入力してください");
-                return;
-            }
-
-            // QRコード生成エリアをクリア
-            document.getElementById("qrcode").innerHTML = "";
-
-            // QRコードを作成
-            let qr = new QRCode(document.getElementById("qrcode"), {
-                text: url,
-                width: 256,
-                height: 256
-            });
-
-            // ダウンロードボタン表示
-            setTimeout(() => {
-                document.getElementById("downloadBtn").style.display = "inline-block";
-            }, 500);
+<script>
+    function generateQR() {
+        let url = document.getElementById("urlInput").value.trim();
+        if (!url) {
+            alert("URLを入力してください");
+            return;
         }
 
-        function downloadQR() {
-            let canvas = document.querySelector("#qrcode canvas");
-            if (!canvas) {
-                alert("QRコードを先に作成してください");
-                return;
-            }
-
-            let link = document.createElement("a");
-            link.href = canvas.toDataURL("image/png");
-            link.download = "qrcode.png";
-            link.click();
+        // 長すぎるURLのチェック（2000文字以上は警告）
+        if (url.length > 2000) {
+            alert("URLが長すぎます（2000文字以内推奨）");
+            return;
         }
-    </script>
+
+        // URLをエンコード
+        let encodedUrl = encodeURIComponent(url);
+
+        // QRコード生成エリアをクリア
+        document.getElementById("qrcode").innerHTML = "";
+
+        // QRコード作成（エンコード後のURLを使用）
+        new QRCode(document.getElementById("qrcode"), {
+            text: encodedUrl,
+            width: 256,
+            height: 256,
+            correctLevel: QRCode.CorrectLevel.L  // 誤り訂正レベルをL（最小限）にする
+        });
+
+        // ダウンロードボタンを表示
+        setTimeout(() => {
+            document.getElementById("downloadBtn").style.display = "inline-block";
+        }, 500);
+    }
+</script>
 </body>
 </html>
