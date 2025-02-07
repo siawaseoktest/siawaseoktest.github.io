@@ -26,29 +26,36 @@
             return;
         }
 
-        // 長すぎるURLのチェック（2000文字以上は警告）
-        if (url.length > 2000) {
-            alert("URLが長すぎます（2000文字以内推奨）");
-            return;
+        // URLをパースして処理
+        try {
+            let urlObj = new URL(url);
+            let pathnameParts = urlObj.pathname.split('/').map((part, index) => {
+                return index < 2 ? part : encodeURIComponent(part); // 3つ目以降をエンコード
+            }).join('/');
+
+            let encodedUrl = urlObj.origin + pathnameParts + urlObj.search + urlObj.hash;
+
+            // QRコード生成エリアをクリア
+            document.getElementById("qrcode").innerHTML = "";
+
+            // QRコード作成
+            new QRCode(document.getElementById("qrcode"), {
+                text: encodedUrl,
+                width: 256,
+                height: 256,
+                correctLevel: QRCode.CorrectLevel.L
+            });
+
+            // ダウンロードボタンを表示
+            setTimeout(() => {
+                document.getElementById("downloadBtn").style.display = "inline-block";
+            }, 500);
+        } catch (error) {
+            alert("無効なURLです");
         }
-
-        // QRコード生成エリアをクリア
-        document.getElementById("qrcode").innerHTML = "";
-
-        // QRコード作成（そのままのURLを使用）
-        new QRCode(document.getElementById("qrcode"), {
-            text: url,
-            width: 256,
-            height: 256,
-            correctLevel: QRCode.CorrectLevel.L  // 誤り訂正レベルをL（最小限）にする
-        });
-
-        // ダウンロードボタンを表示
-        setTimeout(() => {
-            document.getElementById("downloadBtn").style.display = "inline-block";
-        }, 500);
     }
 </script>
+
 
 </body>
 </html>
