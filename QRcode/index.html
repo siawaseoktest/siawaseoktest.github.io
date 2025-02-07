@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QRコード作成</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; padding: 20px; }
+        input { width: 80%; padding: 10px; margin: 10px 0; }
+        button { padding: 10px 20px; margin: 10px; cursor: pointer; }
+        #qrcode { margin: 20px auto; }
+    </style>
+</head>
+<body>
+    <h1>QRコード作成</h1>
+    <input type="text" id="urlInput" placeholder="URLを入力">
+    <button onclick="generateQR()">QRコード作成</button>
+    <div id="qrcode"></div>
+    <button id="downloadBtn" style="display:none;" onclick="downloadQR()">ダウンロード</button>
+
+    <script>
+        function generateQR() {
+            let url = document.getElementById("urlInput").value.trim();
+            if (!url) {
+                alert("URLを入力してください");
+                return;
+            }
+
+            // QRコード生成エリアをクリア
+            document.getElementById("qrcode").innerHTML = "";
+
+            // QRコードを作成
+            let qr = new QRCode(document.getElementById("qrcode"), {
+                text: url,
+                width: 256,
+                height: 256
+            });
+
+            // ダウンロードボタン表示
+            setTimeout(() => {
+                document.getElementById("downloadBtn").style.display = "inline-block";
+            }, 500);
+        }
+
+        function downloadQR() {
+            let canvas = document.querySelector("#qrcode canvas");
+            if (!canvas) {
+                alert("QRコードを先に作成してください");
+                return;
+            }
+
+            let link = document.createElement("a");
+            link.href = canvas.toDataURL("image/png");
+            link.download = "qrcode.png";
+            link.click();
+        }
+    </script>
+</body>
+</html>
